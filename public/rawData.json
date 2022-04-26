@@ -1,0 +1,9 @@
+[
+	{ "name": "Standard Work", "parent": "", "link": "" },
+	{ "name": "Core Tools", "parent": "Standard Work", "link": "" },
+	{ "name": "SPC System", "parent": "Standard Work", "link": "" },
+	{ "name": "PFMEA", "parent": "Core Tools", "link": "" },
+	{ "name": "MSA", "parent": "Core Tools", "link": "" },
+	{ "name": "Ignition", "parent": "SPC System", "link": "" },
+	{ "name": "Data Tagging", "parent": "Ignition", "link": "https://google.com" }
+]
