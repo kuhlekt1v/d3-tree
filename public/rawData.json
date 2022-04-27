@@ -5,5 +5,9 @@
 	{ "name": "PFMEA", "parent": "Core Tools", "link": "" },
 	{ "name": "MSA", "parent": "Core Tools", "link": "" },
 	{ "name": "Ignition", "parent": "SPC System", "link": "" },
-	{ "name": "Data Tagging", "parent": "Ignition", "link": "https://google.com" }
+	{
+		"name": "Data Taggingggggggggggggg",
+		"parent": "Ignition",
+		"link": "https://wiki.fairfield.edu/display/OUR/Calendars?preview=/23855426/84476026/Academic%20Calendar%202021-22.pdf"
+	}
 ]

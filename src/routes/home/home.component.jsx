@@ -4,64 +4,54 @@ import Tree from 'react-d3-tree';
 import * as d3 from 'd3';
 
 import './home.styles.scss';
-import { tree } from 'd3';
-
-const initialData = {
-	name: 'Process Control',
-	children: [
-		{
-			name: 'Core Tools',
-			children: [
-				{
-					name: 'PFMEA',
-				},
-				{
-					name: 'Control Plan',
-				},
-				{
-					name: 'Data Collection Plan',
-				},
-				{
-					name: 'MSA',
-				},
-				{
-					name: 'Control & Capability',
-				},
-			],
-		},
-		{
-			name: 'SPC System',
-			children: [
-				{
-					name: 'Ignition',
-					children: [
-						{ name: 'Data Tagging' },
-						{ name: 'Operator Dashboard Development' },
-						{ name: 'Auto Andons' },
-						{ name: 'Manual Andons' },
-						{ name: 'Install', link: 'https://google.com' },
-					],
-				},
-			],
-		},
-	],
-};
 
 // Base URL for remote data.
 const client = axios.create({
 	baseURL: 'rawData.json',
 });
 
+const renderNodeWithCustomEvents = ({
+	nodeDatum,
+	toggleNode,
+	handleLinkClick,
+}) => (
+	<g>
+		<foreignObject x='0' height='120px' width='500px' y='-60px'>
+			<div
+				title={nodeDatum.name}
+				className={`elemental-node ${
+					nodeDatum.link ? 'link-node' : 'normal-node'
+				}`}
+				onClick={toggleNode}
+			>
+				<span title={nodeDatum.name}>
+					<p style={{ margin: 0 }}>{nodeDatum.shortName}</p>
+					{nodeDatum.link && (
+						<p className='doc-link' onClick={() => handleLinkClick(nodeDatum)}>
+							Document Link
+						</p>
+					)}
+				</span>
+			</div>
+		</foreignObject>
+	</g>
+);
+
 const Home = () => {
+	const handleLinkClick = nodeDatum => {
+		window.open(nodeDatum.link, '_blank');
+	};
+
 	const [data, setData] = useState({});
 
 	// Convert d3 hierarchy to nested JSON.
-	// Works but need to figure out to attach links.
 	const hierarchyToJson = root => {
-		const obj = { name: root.id, link: root.data.link };
-		//console.log(obj);
+		let shortName =
+			root.id.length >= 15 ? root.id.substr(0, 15) + '..' : root.id;
+
+		const obj = { name: root.id, link: root.data.link, shortName: shortName };
 		if (root.children) obj.children = root.children.map(hierarchyToJson);
-		//console.log(obj.children);
+
 		if (root.data && root.data.value) obj.value = root.data.value;
 		return obj;
 	};
@@ -79,9 +69,6 @@ const Home = () => {
 
 				// Create nested JSON.
 				let hierarchy = hierarchyToJson(root);
-
-				console.log(hierarchy);
-
 				setData(hierarchy);
 			} catch (error) {
 				console.log(error);
@@ -107,12 +94,14 @@ const Home = () => {
 		<div className='container'>
 			<Tree
 				data={data}
+				renderCustomNodeElement={rd3tProps =>
+					renderNodeWithCustomEvents({ ...rd3tProps, handleLinkClick })
+				}
 				initialDepth={0}
 				zoomable={false}
-				collapsible={true}
-				leafNodeClassName='node__leaf'
-				className='tree'
 				translate={{ x: 50, y: size.y / 2 }}
+				nodeSize={{ x: 350, y: 200 }}
+				separation={{ siblings: 1, nonSiblings: 1.5 }}
 			/>
 		</div>
 	);
